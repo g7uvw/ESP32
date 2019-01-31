@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>Configure Sensor</title>
+    <style>
+        .c {
+            text-align: center;
+        }
+
+        div,
+        input {
+            padding: 5px;
+            font-size: 1em;
+        }
+
+        input {
+            width: 95%;
+        }
+
+        body {
+            text-align: center;
+            font-family: verdana;
+        }
+
+        button {
+            border: 0;
+            border-radius: 0.3rem;
+            background-color: #1fa3ec;
+            color: #fff;
+            line-height: 2.4rem;
+            font-size: 1.2rem;
+            width: 100%;
+        }
+
+        .q {
+            float: right;
+            width: 64px;
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body>
+    <div style='text-align:left;display:inline-block;min-width:400px;'>
+        <br/>
+        <form method='get' action='configsave'>
+            <input id='s' name='s' length=32 placeholder='Sensor ID'>
+            <br/>
+            <br/>
+            <input id='i' name='i' length=6 placeholder='Sampling Interval (s) - default = 300s'>
+            <br/>
+            <br/>
+            <label for="d">Current Date:</label>
+            <input id='d' name='d' type="date">
+            <br/>
+            <br/>
+            <label for="t">Current Time:</label>
+            <input id='t' name='t' type="time">
+            <br/>
+            <br/>
+            <br/>
+            <button type='submit'>save</button>
+        </form>
+    </div>
+</body>
+
+</html>

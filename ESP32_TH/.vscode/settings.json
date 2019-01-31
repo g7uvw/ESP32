@@ -1,0 +1,6 @@
+{
+    "terminal.integrated.env.osx": {
+        "PATH": "/Users/dm/.platformio/penv/bin:/Users/dm/.platformio/penv:/Users/dm/anaconda2/bin:/Library/Frameworks/Python.framework/Versions/2.7/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Users/dm/Development/embedded/arm/tools/gcc-arm-none-eabi/bin:/opt/X11/bin:/usr/local/git/bin:/usr/local/go/bin:/Library/TeX/texbin",
+        "PLATFORMIO_CALLER": "vscode"
+    }
+}
