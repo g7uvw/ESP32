@@ -41,31 +41,27 @@ SensorApp::SensorApp(const int DHTPin, DHTesp::DHT_MODEL_t DHT_Type)
     // but we don't really care. It was probably power-on or something. We'll
     // just go back to sleep and wait for a real reason to wake up.
     default : Serial.println("Wakeup was not caused by deep sleep"); 
-      // TODO go to sleep.
-      break;
-  }
-
-
-  // Initialize DHT sensor
-  //DHTesp dht;
-  // Init the filesystem
-  SPIFFS.begin();
-  File file = SPIFFS.open("/config.txt");
-  if(!file || file.isDirectory())
-    {
+      // Init the filesystem
+      SPIFFS.begin();
+      File file = SPIFFS.open("/config.txt");
+      if(!file || file.isDirectory())
+      {
       // file not found, so use some defaults
        _sensorID = "Sensor";
        _interval = 300;
        _caloffset = 0;
-    }
+      }
 
-  while(file.available())
-    {
+    while(file.available())
+      {
       _sensorID = file.readStringUntil('\n');
       _interval = file.readStringUntil('\n').toInt();
       _caloffset = file.readStringUntil('\n').toInt();
-    }
-file.close();
+      }
+    file.close();
+      // TODO go to sleep.
+      break;
+  }
 }
 
 void SensorApp::takeReading(int _DHTPin, DHTesp::DHT_MODEL_t _DHTTYPE)
