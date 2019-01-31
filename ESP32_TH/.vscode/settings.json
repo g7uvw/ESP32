@@ -1,6 +1,6 @@
 {
     "terminal.integrated.env.osx": {
-        "PATH": "/Users/dm/.platformio/penv/bin:/Users/dm/.platformio/penv:/Users/dm/anaconda2/bin:/Library/Frameworks/Python.framework/Versions/2.7/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Users/dm/Development/embedded/arm/tools/gcc-arm-none-eabi/bin:/opt/X11/bin:/usr/local/git/bin:/usr/local/go/bin:/Library/TeX/texbin",
+        "PATH": "/Users/dm/.platformio/penv/bin:/Users/dm/.platformio/penv:/Users/dm/anaconda2/bin:/Users/dm/.jenv/shims:/Users/dm/.jenv/bin:/usr/local/sbin:/usr/local/bin:/Library/Frameworks/Python.framework/Versions/3.4/bin:/opt/local/bin:/opt/local/sbin:/Applications/microchip/mplabc30/v3.30c/bin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/2.6/bin:/sw/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Users/dm/Development/embedded/tools/gcc-arm-none-eabi/bin:/opt/X11/bin:/Library/TeX/texbin:/Applications/010 Editor.app/Contents/CmdLine",
         "PLATFORMIO_CALLER": "vscode"
     }
 }
