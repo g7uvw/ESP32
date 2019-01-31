@@ -1,6 +1,7 @@
 #ifndef SensorApp_h
 #define SensorApp_h
 #include <time.h>
+#include <rom/rtc.h>
 #include "Arduino.h"
 #include "SPIFFS.h"
 #include "FS.h"
@@ -15,10 +16,10 @@ class SensorApp
 {
   public:
      // Constructor
-     SensorApp();
+     SensorApp(const int DHTPin, DHTesp::DHT_MODEL_t);
 
      // Functions that do the work
-     void takeReading(void);
+     void takeReading(int DHTPin, DHTesp::DHT_MODEL_t);
      void doWiFi(void);
      void goToSleep(void);
 
@@ -37,9 +38,11 @@ class SensorApp
 
 private:
      String _sensorID;
-     unsigned int _interval = 300;
-     int _caloffset;
-     time_t _time;
+     RTC_DATA_ATTR unsigned int _interval = 300;
+     RTC_DATA_ATTR int _caloffset;
+     RTC_DATA_ATTR time_t _time;
+     int _DHTPin;
+     DHTesp::DHT_MODEL_t _DHT_Type;
 
 };
 

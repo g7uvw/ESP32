@@ -12,8 +12,10 @@ First thing we do here is to find out which of the three ways got us here, then
 we decide what to do about it.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
-SensorApp::SensorApp()
+SensorApp::SensorApp(const int DHTPin, DHTesp::DHT_MODEL_t DHT_Type)
 {
+  _DHTPin = DHTPin;
+  _DHT_Type = DHT_Type;
   esp_sleep_wakeup_cause_t wakeup_reason;
   wakeup_reason = esp_sleep_get_wakeup_cause();
 
@@ -31,6 +33,7 @@ SensorApp::SensorApp()
     case 3  : Serial.println("Wakeup to take a reading");
     case 4  :
     case 5  :
+      takeReading(_DHTPin,_DHT_Type);
       // TODO take a reading, then sleep again.  
       break;
     // If we arrive here, then who knows how we got here, we could find out
@@ -43,7 +46,7 @@ SensorApp::SensorApp()
 
 
   // Initialize DHT sensor
-  DHTesp dht;
+  //DHTesp dht;
   // Init the filesystem
   SPIFFS.begin();
   File file = SPIFFS.open("/config.txt");
@@ -64,11 +67,11 @@ SensorApp::SensorApp()
 file.close();
 }
 
-void SensorApp::takeReading()
+void SensorApp::takeReading(int _DHTPin, DHTesp::DHT_MODEL_t _DHTTYPE)
 {
   // Initialize DHT sensor
   DHTesp dht;
-  dht.setup(DHTPin, DHTTYPE);
+  dht.setup(_DHTPin, _DHTTYPE);
 
 }
 

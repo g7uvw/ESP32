@@ -44,7 +44,7 @@ void setup()
 {
   Serial.begin(115200);
   delay(2000);
-  SensorApp sensor;
+  SensorApp sensor(DHTPin, DHTTYPE);
 }
 
 
