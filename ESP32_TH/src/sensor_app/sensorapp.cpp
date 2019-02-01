@@ -69,6 +69,24 @@ void SensorApp::takeReading(int _DHTPin, DHTesp::DHT_MODEL_t _DHTTYPE)
   // Initialize DHT sensor
   DHTesp dht;
   dht.setup(_DHTPin, _DHTTYPE);
+  uint8_t failcount = 0;
+  bool failed = false;
+  TempAndHumidity TH;
+  TH = dht.getTempAndHumidity();
+  while (dht.getStatus() != 0)
+  {
+    failcount++;
+    TH = dht.getTempAndHumidity();
+    if (failcount > 5)
+    {
+      failed = true;
+      break;
+    }
+  }
+  TH.temperature
+  TH.humidity
+
+
 
 }
 
