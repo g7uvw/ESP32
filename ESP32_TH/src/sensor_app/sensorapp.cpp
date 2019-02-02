@@ -1,6 +1,7 @@
 #include "sensorapp.h"
 #include "sensorRTC.h"
 
+
 /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 This is where the magic happens!
 We arrive here right after the sensor wakes up. There are three things that can
@@ -62,6 +63,7 @@ SensorApp::SensorApp(const int DHTPin, DHTesp::DHT_MODEL_t DHT_Type)
       // TODO go to sleep.
       break;
   }
+
 }
 
 void SensorApp::takeReading(int _DHTPin, DHTesp::DHT_MODEL_t _DHTTYPE)
@@ -83,8 +85,13 @@ void SensorApp::takeReading(int _DHTPin, DHTesp::DHT_MODEL_t _DHTTYPE)
       break;
     }
   }
-  TH.temperature
-  TH.humidity
+    char buff[25];
+    time_t now = time (0);
+    strftime (buff, 25, "%Y-%m-%d %H:%M:%S", localtime (&now));
+    String datapoint = String(buff) + "," + String(TH.temperature) + "," + String(TH.humidity);
+    Serial.println(datapoint);
+    String test = _sensorID + " " + String(_interval) + " " + String(_caloffset);
+    Serial.println(test);
 
 
 
