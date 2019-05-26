@@ -12,6 +12,7 @@ wake the sensor up:
 
 First thing we do here is to find out which of the three ways got us here, then
 we decide what to do about it.
+
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 SensorApp::SensorApp(const int DHTPin, DHTesp::DHT_MODEL_t DHT_Type)
