@@ -1,18 +1,13 @@
 #include <Arduino.h>
 #include "sensor_app/sensorapp.h"
-#define uS_TO_S_FACTOR 1000000  /* Conversion factor for micro seconds to seconds */
-#define TIME_TO_SLEEP  5        /* Time ESP32 will go to sleep (in seconds) */
+
+//#define TIME_TO_SLEEP  5        /* Time ESP32 will go to sleep (in seconds) */
 
 /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Here we do all the setup stuff, this is where we define what type of sensors we
 are using, where they are connected and what the buttons on the board will do.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
-/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-There are 2 buttons on the board, one is a RESET button, the other is connected
-to pin 0 - we can use this to trigger the sensor to start the WiFI link
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-gpio_num_t  GPIO_INPUT_IO_TRIGGER = (gpio_num_t) 0;  
 
 /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 There are two common types of temp and humidity sensor, a Blue one, and a Cream
@@ -38,29 +33,22 @@ First thing we do is enable some debugging on the serial port - this lets us
 know the sensor is alive. We'll disable this later - it's not needed when the 
 sensor is running not connected to a computer.
 
-We then wait two seconds.
+We then wait half a second.
 
 Then we start up the sensor application.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 void setup() 
 {
   Serial.begin(115200);
-  delay(2000);
+  delay(500);
   SensorApp sensor(DHTPin, DHTTYPE);
 
-  /*
-    First we configure the wake up source
-    We set our ESP32 to wake up every 5 seconds
-  */
-  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
-  Serial.println("Setup ESP32 to sleep for every " + String(TIME_TO_SLEEP) +
-                 " Seconds");
 
-  gpio_pullup_en(GPIO_INPUT_IO_TRIGGER);        // use pullup on GPIO
-  gpio_pulldown_dis(GPIO_INPUT_IO_TRIGGER);       // not use pulldown on GPIO
-  esp_sleep_enable_ext0_wakeup(GPIO_INPUT_IO_TRIGGER, 0); // Wake if GPIO is low
-  Serial.println("Going to sleep now");
-  esp_deep_sleep_start();
+  //gpio_pullup_en(GPIO_INPUT_IO_TRIGGER);        // use pullup on GPIO
+  //gpio_pulldown_dis(GPIO_INPUT_IO_TRIGGER);       // not use pulldown on GPIO
+  //esp_sleep_enable_ext0_wakeup(GPIO_INPUT_IO_TRIGGER, 0); // Wake if GPIO is low
+
+  //esp_deep_sleep_start();
 }
 
 
