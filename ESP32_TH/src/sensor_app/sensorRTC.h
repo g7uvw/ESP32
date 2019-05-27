@@ -3,7 +3,7 @@
 #include <rom/rtc.h>
 
 /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-This is where we define some persistant storage to survice across wakeups of
+This is where we define some persistant storage to survive across wakeups of
 the sensor. This save reading the storage space every time, should be a bit
 faster and save some power too.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
