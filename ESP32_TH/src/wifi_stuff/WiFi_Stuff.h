@@ -5,6 +5,7 @@
 #include <WebServer.h>
 #include <DNSServer.h>
 #include <memory>
+#include <string>
 #include <esp_wifi.h>
 #include "SPIFFS.h"
 
