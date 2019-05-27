@@ -1,5 +1,5 @@
 #include "WiFi_Stuff.h"
-//#include "page.h"
+
 
 WiFiStuff::WiFiStuff()
 {
@@ -124,9 +124,28 @@ void WiFiStuff::handleRoot() {
 
 void WiFiStuff::handleConfig() {
   DEBUG_WM(F("Handle Config"));
-    if (captivePortal()) { // If caprive portal redirect instead of displaying the page.
+    if (captivePortal()) { // If captive portal redirect instead of displaying the page.
       return;
     }
+    String _sensorID;
+    unsigned int _interval;
+    int8_t _caloffset;
+    File configfile = SPIFFS.open("/config.txt");
+    if(!configfile || configfile.isDirectory())
+      {
+      // file not found, so use some defaults
+       _sensorID = "Sensor";
+       _interval = 300;
+       _caloffset = 0;
+      }
+
+    while(configfile.available())
+      {
+      _sensorID = configfile.readStringUntil('\n');
+      _interval = configfile.readStringUntil('\n').toInt();
+      _caloffset = configfile.readStringUntil('\n').toInt();
+      }
+
   String pageHTML;
   SPIFFS.begin();
   File file = SPIFFS.open("/config.html");
@@ -140,6 +159,20 @@ void WiFiStuff::handleConfig() {
     {
       pageHTML = file.readString();
     }
+  
+  // there is an error here, it's replacing the wrong parts.
+  // fill in the values loadde from config.txt or defaults
+  pageHTML.replace("{s}", _sensorID);
+  pageHTML.replace("{i}", String(_interval));
+  pageHTML.replace("{h}", String(_caloffset));
+
+  // get current date and time from RTC and fill those in too.
+  char buff[25];
+  time_t now = time (0);
+  strftime (buff, 25, "%d-%m-%Y", localtime (&now));
+  pageHTML.replace("{d}",String(buff));
+  strftime (buff, 25, "%H:%M:%S", localtime (&now));
+  pageHTML.replace("{t}",String(buff));
   wwwServer->send(200,"text/html",pageHTML);
             size_t sent = wwwServer->streamFile(file, "text/html");
             delay(500);
@@ -149,13 +182,47 @@ void WiFiStuff::handleConfig() {
 }
 
 void WiFiStuff::handleConfigSave() {
+String _sensorID;
+unsigned int _interval;
+int8_t _caloffset;
 
-  //save the values to config.txt
+_sensorID = wwwServer->arg("s");
+_interval = std::strtoul(wwwServer->arg("i").c_str(),nullptr,0);
+_caloffset = std::strtoul(wwwServer->arg("c").c_str(),nullptr,0);
 
-//  DEBUG_WM(F("Handle ConfigSave"));
-//  _ssid = server->arg("s").c_str();
-//  _pass = server->arg("p").c_str();
+DEBUG_WM("Values recieved from webpage");
+DEBUG_WM(wwwServer->arg("s"));
+DEBUG_WM(wwwServer->arg("i").c_str());
+DEBUG_WM(wwwServer->arg("c").c_str());
 
+// create new file
+// write new settings to it
+// if all ok, delete old file and rename new once
+// else flag error and leave old file
+
+SPIFFS.begin();
+File file = SPIFFS.open("/config.new","w");
+if(!file)
+  {
+    DEBUG_WM("Can't create config.new");
+    return;
+  }
+
+// TODO : Should probably check these write complete
+file.println(_sensorID);
+file.println(_interval)+10;
+file.println(_caloffset);
+file.close();
+
+SPIFFS.remove("/config.txt");
+SPIFFS.rename("/config.new","/config.txt");   
+
+//debugging - comment out
+File checkfile = SPIFFS.open("/config.txt","r");
+Serial.println("- read from file:");
+    while(checkfile.available()){
+        Serial.write(checkfile.read());
+    }
 }
 
 
