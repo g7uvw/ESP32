@@ -11,6 +11,7 @@
 #include "SPIFFS.h"
 #include "wifi_stuff/WiFi_Stuff.h"
 
+#define uS_TO_S_FACTOR 1000000  /* Conversion factor for micro seconds to seconds */
 
 class SensorApp
 {
@@ -22,6 +23,7 @@ class SensorApp
      void takeReading(int DHTPin, DHTesp::DHT_MODEL_t);
      void doWiFi(void);
      void goToSleep(void);
+     void coldWake(void);
 
      // Utility functions
      void   setSensorID(String ID);
@@ -40,6 +42,11 @@ private:
      
      int _DHTPin;
      DHTesp::DHT_MODEL_t _DHT_Type;
+     /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     There are 2 buttons on the board, one is a RESET button, the other is connected
+     to pin 0 - we can use this to trigger the sensor to start the WiFI link
+     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+     gpio_num_t  GPIO_INPUT_IO_TRIGGER = (gpio_num_t) 0;  
 };
 
 #endif
