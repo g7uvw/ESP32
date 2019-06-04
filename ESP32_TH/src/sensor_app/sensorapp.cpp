@@ -27,7 +27,7 @@ SensorApp::SensorApp(const int DHTPin, DHTesp::DHT_MODEL_t DHT_Type)
     case 1  :  
     case 2  : 
       doWiFi();
-      goToSleep();
+      //goToSleep();
       break;
     // If we got here because the sensor woke up from sleep to take a reading
     // then case 3 occurs and we take a reading. We'll also do the same for
@@ -124,7 +124,9 @@ void SensorApp::doWiFi()
 Serial.println("Wakeup caused by button, starting portal"); 
       // Serve the Portal page
        WiFiStuff portal;
-      if (!portal.startPortal("Frogs LEGS!!")) 
+      //if (!portal.startPortal("Frogs LEGS!!")) 
+      const char *c = _sensorID.c_str();
+      if (!portal.startPortal(c))
       {
          Serial.println("Can't init portal");
       }
