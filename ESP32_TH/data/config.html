@@ -46,24 +46,24 @@
     <div style='text-align:left;display:inline-block;min-width:400px;'>
         <br/>
         <form method='get' action='configsave'>
-        	<input id='s' name='{s}' length=32 placeholder='Sensor ID'>
-            <label for="s">Current Sensor Name:</label>
+        	<input id='s' name='name' length=32 value = '{s}'>
+            <label for="s">Current Sensor Name</label>
             <br/>
             <br/>
-            <input id='i' name='{i}' length=6 placeholder='300'>
-            <label for="i">Sampling Interval (s):</label>
+            <input id='i' name='int' length=6 value='{300}'>
+            <label for="i">Sampling Interval (s)</label>
             <br/>
             <br/>
-            <input id='h' name='{hc}' length=2 placeholder='0'>
-            <label for="h">Humidity Calibration Offset (%):</label>
+            <input id='h' name='hc' length=2 value = '{hc}'>
+            <label for="h">Humidity Calibration Offset (%)</label>
             <br/>
             <br/>
-            <input id='d' name='d' type="date">
-            <label for="d">Current Date:</label>
+            <input id = 'd' name = 'date' type="date" data-date="" data-date-format="DD MMMM YYYY" value="2099-01-02">
+            <label for="d">Current Date</label>
             <br/>
             <br/>
-            <input id='t' name='t' type="time">
-            <label for="t">Current Time:</label>
+            <input id='t' name='time' type="time">
+            <label for="t">Current Time</label>
             <br/>
             <br/>
             <br/>
