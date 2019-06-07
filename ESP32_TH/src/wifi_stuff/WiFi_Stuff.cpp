@@ -185,15 +185,16 @@ void WiFiStuff::handleConfigSave() {
 String _sensorID;
 unsigned int _interval;
 int8_t _caloffset;
+DEBUG_WM(wwwServer->args());//("name"));
 
-_sensorID = wwwServer->arg("s");
-_interval = std::strtoul(wwwServer->arg("i").c_str(),nullptr,0);
-_caloffset = std::strtoul(wwwServer->arg("c").c_str(),nullptr,0);
+_sensorID = wwwServer->arg("name");
+_interval = std::strtoul(wwwServer->arg("int").c_str(),nullptr,0);
+_caloffset = std::strtoul(wwwServer->arg("hc").c_str(),nullptr,0);
 
-DEBUG_WM("Values recieved from webpage");
-DEBUG_WM(wwwServer->arg("s"));
-DEBUG_WM(wwwServer->arg("i").c_str());
-DEBUG_WM(wwwServer->arg("c").c_str());
+//DEBUG_WM("Values recieved from webpage");
+//DEBUG_WM(wwwServer->args());//("name"));
+//DEBUG_WM(wwwServer->arg("int").c_str());
+//DEBUG_WM(wwwServer->arg("hc").c_str());
 
 // create new file
 // write new settings to it
