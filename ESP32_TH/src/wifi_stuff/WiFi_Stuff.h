@@ -14,6 +14,10 @@ class WiFiStuff
   public:
     WiFiStuff();
 
+    String _sensorID;
+    unsigned int _interval;
+    int8_t _caloffset;
+
     bool  startPortal(char const *apName);
 
 
@@ -50,6 +54,7 @@ class WiFiStuff
     void          handleConfig();
     void          handleConfigSave();
     void          handleNotFound();
+    void          handleLog();
     bool          captivePortal();
     bool          configPortalHasTimeout();
     bool          setDateTime(String, String);

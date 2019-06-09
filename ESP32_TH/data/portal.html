@@ -43,7 +43,7 @@
 
 <body>
     <div style='text-align:left;display:inline-block;min-width:260px;'>
-        <h1>Frogs!</h1>
+        <h1>{n}</h1>
         <form action="/config" method="get">
             <button>Configure Sensor</button>
         </form>
@@ -56,6 +56,10 @@
           <button> Erase Data</button>
         </form>
         <br/>
+        <form action="/log" method="get">
+            <button>Start Logging</button>
+          </form>
+          <br/>
     </div>
 </body>
 
