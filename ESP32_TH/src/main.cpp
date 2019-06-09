@@ -39,6 +39,10 @@ Then we start up the sensor application.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 void setup() 
 {
+  // Switch off WiFi and bluetooth for lower power
+  WiFi.mode(WIFI_OFF);
+  btStop();
+
   Serial.begin(115200);
   delay(500);
   SensorApp sensor(DHTPin, DHTTYPE);
