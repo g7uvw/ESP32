@@ -52,6 +52,7 @@ class WiFiStuff
     void          handleData();
     void          handleDataFile();
     void          handleWipe();
+    void          handleWipe2();
     void          handleConfig();
     void          handleConfigSave();
     void          handleNotFound();
