@@ -43,6 +43,7 @@ class WiFiStuff
     IPAddress     _sta_static_gw;
     IPAddress     _sta_static_sn;
 
+    String        prepConfigPage();
     void          handleRoot();
     void          handleData();
     void          handleWipe();
@@ -51,6 +52,7 @@ class WiFiStuff
     void          handleNotFound();
     bool          captivePortal();
     bool          configPortalHasTimeout();
+    bool          setDateTime(String, String);
 
     // DNS server
     const byte    DNS_PORT = 53;
