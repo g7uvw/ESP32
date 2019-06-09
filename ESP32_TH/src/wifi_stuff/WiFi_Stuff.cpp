@@ -386,7 +386,7 @@ void WiFiStuff::handleWipe2()
 {
   SPIFFS.begin();
   SPIFFS.remove("/data.csv");
-  wwwServer->send(200,"text/html","Data deleted.")
+  wwwServer->send(200,"text/html","Data deleted.");
 }
 
 void WiFiStuff::handleNotFound()
