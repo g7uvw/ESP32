@@ -242,32 +242,44 @@ bool WiFiStuff::setDateTime(String _date, String _time)
   DEBUG_WM(_date);
   DEBUG_WM(_time);
 
-  Serial.printf("Year = %ld", (_date.substring(6,9).toInt()));
-  Serial.println();
-  Serial.printf("Month = %ld", ((_date.substring(3,4).toInt())));
-  Serial.println();
-  Serial.printf("Day = %ld", ((_date.substring(0,1).toInt())));
-  Serial.println();
-  Serial.printf("Hour = %ld", ((_time.substring(0,1).toInt())));
-  Serial.println();
-  Serial.printf("Min = %ld", ((_time.substring(3,4).toInt())));
-  Serial.println();
-  Serial.printf("Sec = %ld", ((_time.substring(6,7).toInt())));
-  Serial.println();
+  // Serial.println(_date.substring(6,10));
+  // Serial.println(_date.substring(3,5));
+  // Serial.println(_date.substring(0,2));
 
-  /*
+  // Serial.println(_time.substring(0,2));
+  // Serial.println(_time.substring(3,5));
+  // Serial.println(_time.substring(6,8));
+
+  // Serial.printf("Year = %ld", (_date.substring(6,10).toInt()));
+  // Serial.println();
+  // Serial.printf("Month = %ld", ((_date.substring(3,5).toInt())));
+  // Serial.println();
+  // Serial.printf("Day = %ld", ((_date.substring(0,2).toInt())));
+  // Serial.println();
+  // Serial.printf("Hour = %ld", ((_time.substring(0,2).toInt())));
+  // Serial.println();
+  // Serial.printf("Min = %ld", ((_time.substring(3,5).toInt())));
+  // Serial.println();
+  // Serial.printf("Sec = %ld", ((_time.substring(6,8).toInt())));
+  // Serial.println();
+
+  
   struct tm tm;
-  tm.tm_year = ((_date.substring(6,9).toInt()) - 1900);// 2018 - 1900;
-  tm.tm_mon =  ((_date.substring(3,4).toInt()));
-  tm.tm_mday = ((_date.substring(0,1).toInt()));
-  tm.tm_hour = ((_time.substring(0,1).toInt()));
-  tm.tm_min =  ((_time.substring(3,4).toInt()));
-  tm.tm_sec =  ((_time.substring(6,7).toInt()));
+  tm.tm_year = ((_date.substring(6,10).toInt()) - 1900);// 2018 - 1900;
+  tm.tm_mon =  ((_date.substring(3,5).toInt())-1); // dunno why this needs the -1. 
+  tm.tm_mday = ((_date.substring(0,2).toInt()));
+  tm.tm_hour = ((_time.substring(0,2).toInt()));
+  tm.tm_min =  ((_time.substring(3,5).toInt()));
+  tm.tm_sec =  ((_time.substring(6,8).toInt()));
   time_t t = mktime(&tm);
   printf("Setting time: %s", asctime(&tm));
   struct timeval now = { .tv_sec = t };
   settimeofday(&now, NULL);
-  */
+  
+  // char buff[25];
+  // time_t rightnow = time (0);
+  // strftime (buff, 25, "%Y-%m-%d %H:%M:%S", localtime (&rightnow));
+  // Serial.println(buff);
   return true;
 }
 
