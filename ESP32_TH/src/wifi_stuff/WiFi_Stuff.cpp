@@ -1,5 +1,5 @@
 #include "WiFi_Stuff.h"
-
+#include <time.h>
 
 WiFiStuff::WiFiStuff()
 {
@@ -146,66 +146,53 @@ void WiFiStuff::handleConfig() {
       _caloffset = configfile.readStringUntil('\n').toInt();
       }
 
-  String pageHTML;
-  SPIFFS.begin();
-  File file = SPIFFS.open("/config.html");
-            if(!file || file.isDirectory())
-            {
-            wwwServer->send ( 500, "text/html", "- failed to open file for reading");
-            DEBUG_WM(F("- failed to open file for reading"));
-            return;
-            }
-  while(file.available())
-    {
-      pageHTML = file.readString();
-    }
-  
-  // there is an error here, it's replacing the wrong parts.
-  // fill in the values loadde from config.txt or defaults
-  pageHTML.replace("{s}", _sensorID);
-  pageHTML.replace("{i}", String(_interval));
-  pageHTML.replace("{h}", String(_caloffset));
+      String pageHTML = prepConfigPage();
+      
+      // there is an error here, it's replacing the wrong parts.
+      // fill in the values loadde from config.txt or defaults
+      pageHTML.replace("{title}","Configure Sensor");
+      pageHTML.replace("{s}", _sensorID);
+      pageHTML.replace("{i}", String(_interval));
+      pageHTML.replace("{hc}", String(_caloffset));
 
-  // get current date and time from RTC and fill those in too.
-  char buff[25];
-  time_t now = time (0);
-  strftime (buff, 25, "%d-%m-%Y", localtime (&now));
-  pageHTML.replace("{d}",String(buff));
-  strftime (buff, 25, "%H:%M:%S", localtime (&now));
-  pageHTML.replace("{t}",String(buff));
-  wwwServer->send(200,"text/html",pageHTML);
-            size_t sent = wwwServer->streamFile(file, "text/html");
-            delay(500);
-            DEBUG_WM(F("- read and sent file OK"));
-            DEBUG_WM(sent);
-  file.close();
+      // get current date and time from RTC and fill those in too.
+      char buff[25];
+      time_t now = time(0);
+      strftime(buff, 25, "%d-%m-%Y", localtime(&now));
+      pageHTML.replace("{date}", String(buff));
+      strftime(buff, 25, "%H:%M:%S", localtime(&now));
+      pageHTML.replace("{time}", String(buff));
+      wwwServer->send(200, "text/html", pageHTML);
+      //size_t sent = wwwServer->streamFile(file, "text/html");
+      delay(100);
+      DEBUG_WM(F("- read and sent file OK"));
 }
 
 void WiFiStuff::handleConfigSave() {
 String _sensorID;
 unsigned int _interval;
 int8_t _caloffset;
-DEBUG_WM(wwwServer->args());//("name"));
+DEBUG_WM("Save");
+DEBUG_WM(wwwServer->arg("name").c_str());
+DEBUG_WM(wwwServer->arg("int").c_str());
+DEBUG_WM(wwwServer->arg("hc").c_str());
 
+DEBUG_WM("Saved values");
 _sensorID = wwwServer->arg("name");
 _interval = std::strtoul(wwwServer->arg("int").c_str(),nullptr,0);
 _caloffset = std::strtoul(wwwServer->arg("hc").c_str(),nullptr,0);
 
-//DEBUG_WM("Values recieved from webpage");
-//DEBUG_WM(wwwServer->args());//("name"));
-//DEBUG_WM(wwwServer->arg("int").c_str());
-//DEBUG_WM(wwwServer->arg("hc").c_str());
+DEBUG_WM("are:");
+DEBUG_WM(_sensorID.c_str());
+DEBUG_WM(_interval);
+DEBUG_WM(_caloffset);
 
-// create new file
-// write new settings to it
-// if all ok, delete old file and rename new once
-// else flag error and leave old file
 
 SPIFFS.begin();
-File file = SPIFFS.open("/config.new","w");
+File file = SPIFFS.open("/config.txt","w");
 if(!file)
   {
-    DEBUG_WM("Can't create config.new");
+    DEBUG_WM("Can't overwrite config.txt");
     return;
   }
 
@@ -215,19 +202,95 @@ file.println(_interval)+10;
 file.println(_caloffset);
 file.close();
 
-SPIFFS.remove("/config.txt");
-SPIFFS.rename("/config.new","/config.txt");   
+// Save Date and Time to RTC
+setDateTime(wwwServer->arg("date"),wwwServer->arg("time"));
 
 //debugging - comment out
-File checkfile = SPIFFS.open("/config.txt","r");
-Serial.println("- read from file:");
-    while(checkfile.available()){
-        Serial.write(checkfile.read());
-    }
+//File checkfile = SPIFFS.open("/config.txt","r");
+//DEBUG_WM("Reading from file:");
+
+//    while(checkfile.available())
+//    {
+//      Serial.write(checkfile.read());
+//   }
+//checkfile.close();
+
+ String pageHTML;
+      pageHTML = prepConfigPage();
+      pageHTML.replace("{title}","Values Saved");
+      pageHTML.replace("{s}", _sensorID);
+      pageHTML.replace("{i}", String(_interval));
+      pageHTML.replace("{hc}", String(_caloffset));
+
+      // get current date and time from RTC and fill those in too.
+      char buff[25];
+      time_t now = time(0);
+      strftime(buff, 25, "%d-%m-%Y", localtime(&now));
+      pageHTML.replace("{date}", String(buff));
+      strftime(buff, 25, "%H:%M:%S", localtime(&now));
+      pageHTML.replace("{time}", String(buff));
+      wwwServer->send(200, "text/html", pageHTML);
 }
 
+bool WiFiStuff::setDateTime(String _date, String _time)
+{
+  /*
+  *WM 24-12-2019
+  *WM 21:37:56
+  */
+  DEBUG_WM("setDateTime:");
+  DEBUG_WM(_date);
+  DEBUG_WM(_time);
 
+  Serial.printf("Year = %ld", (_date.substring(6,9).toInt()));
+  Serial.println();
+  Serial.printf("Month = %ld", ((_date.substring(3,4).toInt())));
+  Serial.println();
+  Serial.printf("Day = %ld", ((_date.substring(0,1).toInt())));
+  Serial.println();
+  Serial.printf("Hour = %ld", ((_time.substring(0,1).toInt())));
+  Serial.println();
+  Serial.printf("Min = %ld", ((_time.substring(3,4).toInt())));
+  Serial.println();
+  Serial.printf("Sec = %ld", ((_time.substring(6,7).toInt())));
+  Serial.println();
 
+  /*
+  struct tm tm;
+  tm.tm_year = ((_date.substring(6,9).toInt()) - 1900);// 2018 - 1900;
+  tm.tm_mon =  ((_date.substring(3,4).toInt()));
+  tm.tm_mday = ((_date.substring(0,1).toInt()));
+  tm.tm_hour = ((_time.substring(0,1).toInt()));
+  tm.tm_min =  ((_time.substring(3,4).toInt()));
+  tm.tm_sec =  ((_time.substring(6,7).toInt()));
+  time_t t = mktime(&tm);
+  printf("Setting time: %s", asctime(&tm));
+  struct timeval now = { .tv_sec = t };
+  settimeofday(&now, NULL);
+  */
+  return true;
+}
+
+String WiFiStuff::prepConfigPage()
+{
+  String pageHTML;
+  SPIFFS.begin();
+  File file = SPIFFS.open("/config.html");
+  if (!file || file.isDirectory())
+  {
+    pageHTML = "- failed to open file for reading";
+    wwwServer->send(500, "text/html", pageHTML.c_str());
+    DEBUG_WM(pageHTML.c_str());
+    return pageHTML;
+  }
+  while (file.available())
+  {
+    pageHTML = file.readString();
+  }
+
+  file.close();
+  return pageHTML;
+}
 
 void WiFiStuff::handleData() {
   DEBUG_WM(F("Handle Data"));
