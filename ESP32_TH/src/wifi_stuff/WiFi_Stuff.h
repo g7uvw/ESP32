@@ -14,9 +14,9 @@ class WiFiStuff
   public:
     WiFiStuff();
 
-    String _sensorID;
-    unsigned int _interval;
-    int8_t _caloffset;
+    // String _sensorID;
+    // unsigned int _interval;
+    // int8_t _caloffset;
 
     bool  startPortal(char const *apName);
 
@@ -50,6 +50,7 @@ class WiFiStuff
     String        prepConfigPage();
     void          handleRoot();
     void          handleData();
+    void          handleDataFile();
     void          handleWipe();
     void          handleConfig();
     void          handleConfigSave();
