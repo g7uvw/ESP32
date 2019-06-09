@@ -1,5 +1,11 @@
 #include "sensorapp.h"
-#include "sensorRTC.h"
+//#include "sensorRTC.h"
+#include <rom/rtc.h>
+
+RTC_DATA_ATTR unsigned int _interval;
+RTC_DATA_ATTR int _caloffset;
+RTC_DATA_ATTR time_t _time;
+RTC_DATA_ATTR String _sensorID;
 
 /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 This is where the magic happens!
@@ -92,31 +98,39 @@ void SensorApp::coldWake(void)
 
 void SensorApp::takeReading(int _DHTPin, DHTesp::DHT_MODEL_t _DHTTYPE)
 {
+    char timebuff[25];
+    time_t now = time (0);
+
+  // open datafile
+  SPIFFS.begin();
+  File file = SPIFFS.open("/data.csv",FILE_APPEND);
+
   // Initialize DHT sensor
   DHTesp dht;
   dht.setup(_DHTPin, _DHTTYPE);
-  uint8_t failcount = 0;
-  bool failed = false;
   TempAndHumidity TH;
   TH = dht.getTempAndHumidity();
-  while (dht.getStatus() != 0)
-  {
-    failcount++;
-    TH = dht.getTempAndHumidity();
-    if (failcount > 5)
-    {
-      failed = true;
-      break;
-    }
-  }
-    char buff[25];
-    time_t now = time (0);
-    strftime (buff, 25, "%Y-%m-%d %H:%M:%S", localtime (&now));
-    String datapoint = String(buff) + "," + String(TH.temperature) + "," + String(TH.humidity);
-    Serial.println(datapoint);
-    String test = _sensorID + " " + String(_interval) + " " + String(_caloffset);
-    Serial.println(test);
+  
+   //uint8_t failcount = 0;
+  //while (dht.getStatus() != 0)
+  //{
+  //  failcount++;
+  //  TH = dht.getTempAndHumidity();
+  //  if (failcount > 5)
+  //  {
 
+  //    break;
+  //  }
+ // }
+
+    strftime (timebuff, 25, "%Y-%m-%d %H:%M:%S", localtime (&now));
+    String datapoint = String(timebuff) + "," + String(TH.temperature) + "," + String(TH.humidity);
+    Serial.println(datapoint);
+    file.println(datapoint);
+    file.close();
+    
+    //String test = _sensorID + " " + String(_interval) + " " + String(_caloffset);
+    //Serial.println(test);
 }
 
 void SensorApp::doWiFi()
@@ -133,67 +147,4 @@ Serial.println("Wakeup caused by button, starting portal");
 }
 
 
-void SensorApp::setSensorID(String ID)
-{
-  _sensorID = ID;
-}
 
-String SensorApp::getSensorID(void)
-{
-  return _sensorID;
-}
-
-void   SensorApp::setSensorCalOffset(int offset)
-{
-  _caloffset = offset;
-}
-
-int    SensorApp::getSensorCalOffset(void)
-{
-  return _caloffset;
-}
-
-void   SensorApp::setSensorInterval(unsigned int interval)
-{
-  _interval = interval;
-}
-
-unsigned int SensorApp::getSensorInterval()
-{
-  return _interval;
-}
-void   SensorApp::setSensorDateTime(String dt)
-{
-  // not implemented yet
-
-  // struct tm tm;
-  //   tm.tm_year = 2018 - 1900;
-  //   tm.tm_mon = 10;
-  //   tm.tm_mday = 6;
-  //   tm.tm_hour = 19;
-  //   tm.tm_min = 52;
-  //   tm.tm_sec = 00;
-  //   time_t t = mktime(&tm);
-  //   printf("Setting time: %s", asctime(&tm));
-  //   struct timeval now = { .tv_sec = t };
-  // settimeofday(&now, NULL);
-}
-
-
-void   SensorApp::saveSettings()
-{
-  // create new file
-  // write new settings to it
-  // if all ok, delete old file and rename new once
-  // else flag error and leave old file
-
-  //SPIFFS.begin();
-
-  //File file = SPIFFS.open("/config.new","w");
-  //if(!file)
-
-
-  //SPIFFS.remove("/config.txt");            
-
-
-}
