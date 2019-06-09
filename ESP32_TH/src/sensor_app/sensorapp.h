@@ -25,18 +25,6 @@ class SensorApp
      void goToSleep(void);
      void coldWake(void);
 
-     // Utility functions
-     void   setSensorID(String ID);
-     String getSensorID(void);
-
-     void   setSensorCalOffset(int);
-     int    getSensorCalOffset(void);
-
-     void   setSensorInterval(unsigned int interval);
-     unsigned int getSensorInterval();
-
-     void   setSensorDateTime(String dt);
-     void   saveSettings(void);
 
 private:
      
