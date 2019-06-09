@@ -1,8 +1,15 @@
 #include "WiFi_Stuff.h"
+//#include "../sensor_app/sensorRTC.h"
 #include <time.h>
+extern RTC_DATA_ATTR unsigned int _interval;
+extern RTC_DATA_ATTR int _caloffset;
+extern RTC_DATA_ATTR time_t _time;
+extern RTC_DATA_ATTR String _sensorID;
 
 WiFiStuff::WiFiStuff()
 {
+
+  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
   DEBUG_WM("In WiFi Constructor");
   SPIFFS.begin();
   File configfile = SPIFFS.open("/config.txt");
@@ -48,7 +55,10 @@ void WiFiStuff::setupPortal()
   wwwServer->on("/config", std::bind(&WiFiStuff::handleConfig, this));
   wwwServer->on("/configsave", std::bind(&WiFiStuff::handleConfigSave, this));
   wwwServer->on("/data", std::bind(&WiFiStuff::handleData, this));
+  wwwServer->on("/data.csv", std::bind(&WiFiStuff::handleDataFile, this));
   wwwServer->on("/wipe", std::bind(&WiFiStuff::handleWipe, this));
+  wwwServer->on("/wipe2", std::bind(&WiFiStuff::handleWipe2, this));
+
   wwwServer->on("/log",std::bind(&WiFiStuff::handleLog,this));
 
   wwwServer->on("/fwlink", std::bind(&WiFiStuff::handleRoot, this));
@@ -187,9 +197,6 @@ void WiFiStuff::handleConfig()
 
 void WiFiStuff::handleConfigSave()
 {
-  // String _sensorID;
-  // unsigned int _interval;
-  // int8_t _caloffset;
   DEBUG_WM("Save");
   DEBUG_WM(wwwServer->arg("name").c_str());
   DEBUG_WM(wwwServer->arg("int").c_str());
@@ -375,6 +382,12 @@ void WiFiStuff::handleWipe()
   DEBUG_WM(sent);
   file.close();
 }
+void WiFiStuff::handleWipe2()
+{
+  SPIFFS.begin();
+  SPIFFS.remove("/data.csv");
+  wwwServer->send(200,"text/html","Data deleted.")
+}
 
 void WiFiStuff::handleNotFound()
 {
@@ -412,9 +425,19 @@ void WiFiStuff::handleLog()
   esp_sleep_enable_timer_wakeup(_interval * 1000000);
   gpio_pulldown_dis(GPIO_INPUT_IO_TRIGGER);       // not use pulldown on GPIO
   esp_sleep_enable_ext0_wakeup(GPIO_INPUT_IO_TRIGGER, 0); // Wake if GPIO is low
+  digitalWrite(LED_BUILTIN, LOW);   // turn the LED on (HIGH is the voltage level)
   esp_deep_sleep_start();
 }
 
+void WiFiStuff::handleDataFile()
+{
+  DEBUG_WM("In download");
+   SPIFFS.begin();
+   File datafile = SPIFFS.open("/data.csv");
+   size_t sent = wwwServer->streamFile(datafile, "text/csv");
+   delay(500);
+   datafile.close();
+}
 
 
 // Utilities
