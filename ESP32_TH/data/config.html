@@ -3,7 +3,7 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <title>Configure Sensor</title>
+    <title>{title}</title>
     <style>
         .c {
             text-align: center;
@@ -45,12 +45,13 @@
 <body>
     <div style='text-align:left;display:inline-block;min-width:400px;'>
         <br/>
+        <H1>{title}</H1>
         <form method='get' action='configsave'>
         	<input id='s' name='name' length=32 value = '{s}'>
             <label for="s">Current Sensor Name</label>
             <br/>
             <br/>
-            <input id='i' name='int' length=6 value='{300}'>
+            <input id='i' name='int' length=6 value='{i}'>
             <label for="i">Sampling Interval (s)</label>
             <br/>
             <br/>
@@ -58,11 +59,11 @@
             <label for="h">Humidity Calibration Offset (%)</label>
             <br/>
             <br/>
-            <input id = 'd' name = 'date' type="date" data-date="" data-date-format="DD MMMM YYYY" value="2099-01-02">
+            <input id = 'd' name = 'date' type="date" data-date="" data-date-format="DD MMMM YYYY" value="{date}">
             <label for="d">Current Date</label>
             <br/>
             <br/>
-            <input id='t' name='time' type="time">
+            <input id='t' name='time' type="time" value = "{time}">
             <label for="t">Current Time</label>
             <br/>
             <br/>
