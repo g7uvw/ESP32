@@ -58,7 +58,6 @@ class WiFiStuff
     void          handleNotFound();
     void          handleLog();
     bool          captivePortal();
-    bool          configPortalHasTimeout();
     bool          setDateTime(String, String);
 
     // DNS server
