@@ -251,7 +251,8 @@ void WiFiStuff::handleConfigSave()
   time_t now = time(0);
   strftime(buff, 25, "%d-%m-%Y", localtime(&now));
   pageHTML.replace("{date}", String(buff));
-  strftime(buff, 25, "%H:%M:%S", localtime(&now));
+  strftime(buff, 25, "%H:%M", localtime(&now));
+  //strftime(buff, 25, "%H:%M:%S", localtime(&now));
   pageHTML.replace("{time}", String(buff));
   wwwServer->send(200, "text/html", pageHTML);
 }
@@ -293,7 +294,7 @@ bool WiFiStuff::setDateTime(String _date, String _time)
   tm.tm_mday = ((_date.substring(0, 2).toInt()));
   tm.tm_hour = ((_time.substring(0, 2).toInt()));
   tm.tm_min = ((_time.substring(3, 5).toInt()));
-  tm.tm_sec = ((_time.substring(6, 8).toInt()));
+  tm.tm_sec = 30;//((_time.substring(6, 8).toInt()));
   time_t t = mktime(&tm);
   printf("Setting time: %s", asctime(&tm));
   struct timeval now = {.tv_sec = t};
