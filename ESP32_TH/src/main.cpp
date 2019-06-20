@@ -24,7 +24,10 @@ The sensor has three wires, two go to the power supply, the third carries the
 data. This has to go to a named pin on the sensor board. We can use almost any
 pin we like. For simplicity I chose pin 25.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-const int DHTPin = 25;
+//const int DHTPin = 25;
+
+const int DHTPin = 13;
+
 
 
 /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
