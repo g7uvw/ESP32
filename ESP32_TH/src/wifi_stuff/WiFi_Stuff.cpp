@@ -222,7 +222,7 @@ void WiFiStuff::handleConfigSave()
 
   // TODO : Should probably check these write complete
   file.println(_sensorID);
-  file.println(_interval) + 10;
+  file.println(_interval);
   file.println(_caloffset);
   file.close();
 
