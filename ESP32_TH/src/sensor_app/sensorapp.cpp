@@ -1,6 +1,7 @@
 #include "sensorapp.h"
 //#include "sensorRTC.h"
 #include <rom/rtc.h>
+#include "RTClib.h"
 
 RTC_DATA_ATTR unsigned int _interval;
 RTC_DATA_ATTR int _caloffset;
@@ -90,7 +91,6 @@ void SensorApp::coldWake(void)
       _interval = file.readStringUntil('\n').toInt();
       Serial.print("Interval : ");
       Serial.println(_interval);
-      _interval+=10;
       _caloffset = file.readStringUntil('\n').toInt();
       Serial.print("Cal Offset : ");
       Serial.println(_caloffset);
@@ -100,8 +100,18 @@ void SensorApp::coldWake(void)
 
 void SensorApp::takeReading(int _DHTPin, DHTesp::DHT_MODEL_t _DHTTYPE)
 {
-    char timebuff[25];
-    time_t now = time (0);
+  char timebuff[25];
+  // Init RTC
+  RTC_DS3231 rtc;
+  rtc.begin();
+    if (rtc.lostPower()) 
+    {
+    // Set an obviously wrong date
+    rtc.adjust(DateTime(2000,4,1,16,38,04));
+    // This line sets the RTC with an explicit date & time, for example to set
+    // January 21, 2014 at 3am you would call:
+    // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
+    }
 
   // open datafile
   SPIFFS.begin();
@@ -124,8 +134,8 @@ void SensorApp::takeReading(int _DHTPin, DHTesp::DHT_MODEL_t _DHTTYPE)
   //    break;
   //  }
  // }
-
-    strftime (timebuff, 25, "%Y-%m-%d %H:%M:%S", localtime (&now));
+    DateTime _now = rtc.now();
+    sprintf(timebuff, "%02d-%02d-%02d %02d:%02d:%02d", _now.year(), _now.month(), _now.day(), _now.hour(), _now.minute(), _now.second());
     String datapoint = String(timebuff) + "," + String(TH.temperature) + "," + String(TH.humidity);
     Serial.println(datapoint);
     file.println(datapoint);
