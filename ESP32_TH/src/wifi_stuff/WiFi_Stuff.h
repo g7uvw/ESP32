@@ -8,6 +8,7 @@
 #include <string>
 #include <esp_wifi.h>
 #include "SPIFFS.h"
+#include "RTClib.h"
 
 class WiFiStuff
 {
@@ -36,6 +37,7 @@ class WiFiStuff
     std::unique_ptr<DNSServer>        dnsServer;
     std::unique_ptr<WebServer>        wwwServer;
 
+
     void          setupPortal();
     const char*   _apName                 = "SENSOR";
     unsigned long _configPortalTimeout    = 0;
@@ -58,7 +60,7 @@ class WiFiStuff
     void          handleNotFound();
     void          handleLog();
     bool          captivePortal();
-    bool          setDateTime(String, String);
+    void          setDateTime(String, String);
 
     // DNS server
     const byte    DNS_PORT = 53;

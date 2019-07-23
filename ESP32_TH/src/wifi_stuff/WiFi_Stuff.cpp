@@ -1,5 +1,4 @@
 #include "WiFi_Stuff.h"
-//#include "../sensor_app/sensorRTC.h"
 #include <time.h>
 extern RTC_DATA_ATTR unsigned int _interval;
 extern RTC_DATA_ATTR int _caloffset;
@@ -157,21 +156,6 @@ void WiFiStuff::handleConfig()
     return;
   }
 
-  // File configfile = SPIFFS.open("/config.txt");
-  // if(!configfile || configfile.isDirectory())
-  //   {
-  //   // file not found, so use some defaults
-  //    _sensorID = "Sensor";
-  //    _interval = 300;
-  //    _caloffset = 0;
-  //   }
-
-  // while(configfile.available())
-  //   {
-  //   _sensorID = configfile.readStringUntil('\n');
-  //   _interval = configfile.readStringUntil('\n').toInt();
-  //   _caloffset = configfile.readStringUntil('\n').toInt();
-  //   }
 
   String pageHTML = prepConfigPage();
 
@@ -184,10 +168,13 @@ void WiFiStuff::handleConfig()
 
   // get current date and time from RTC and fill those in too.
   char buff[25];
-  time_t now = time(0);
-  strftime(buff, 25, "%d-%m-%Y", localtime(&now));
+  RTC_DS3231 rtc;
+  rtc.begin();
+  DateTime _now = rtc.now();
+
+  sprintf(buff, "%02d-%02d-%02d", _now.day(), _now.month(), _now.year());
   pageHTML.replace("{date}", String(buff));
-  strftime(buff, 25, "%H:%M:%S", localtime(&now));
+  sprintf(buff, "%02d:%02d:%02d", _now.hour(), _now.minute(), _now.second());
   pageHTML.replace("{time}", String(buff));
   wwwServer->send(200, "text/html", pageHTML);
   //size_t sent = wwwServer->streamFile(file, "text/html");
@@ -246,65 +233,46 @@ void WiFiStuff::handleConfigSave()
   pageHTML.replace("{i}", String(_interval));
   pageHTML.replace("{hc}", String(_caloffset));
 
-  // get current date and time from RTC and fill those in too.
+// get current date and time from RTC and fill those in too.
   char buff[25];
-  time_t now = time(0);
-  strftime(buff, 25, "%d-%m-%Y", localtime(&now));
+  RTC_DS3231 rtc;
+  rtc.begin();
+  DateTime _now = rtc.now();
+
+  sprintf(buff, "%02d-%02d-%02d", _now.day(), _now.month(), _now.year());
   pageHTML.replace("{date}", String(buff));
-  strftime(buff, 25, "%H:%M", localtime(&now));
-  //strftime(buff, 25, "%H:%M:%S", localtime(&now));
+  sprintf(buff, "%02d:%02d:%02d", _now.hour(), _now.minute(), _now.second());
   pageHTML.replace("{time}", String(buff));
   wwwServer->send(200, "text/html", pageHTML);
 }
 
-bool WiFiStuff::setDateTime(String _date, String _time)
+void WiFiStuff::setDateTime(String _date, String _time)
 {
   /*
   *WM 24-12-2019
   *WM 21:37:56
   */
+ RTC_DS3231 rtc;
+ rtc.begin();
+    // January 21, 2014 at 3am you would call:
+    // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
+
   DEBUG_WM("setDateTime:");
   DEBUG_WM(_date);
   DEBUG_WM(_time);
+  // 23-07-2019
+uint8_t day =   (_date.substring(0, 2).toInt());
+uint8_t month = (_date.substring(3, 5).toInt());
+uint16_t year =  (_date.substring(6, 10).toInt());
+DEBUG_WM(day);
+DEBUG_WM(month);
+DEBUG_WM(year);
 
-  // Serial.println(_date.substring(6,10));
-  // Serial.println(_date.substring(3,5));
-  // Serial.println(_date.substring(0,2));
 
-  // Serial.println(_time.substring(0,2));
-  // Serial.println(_time.substring(3,5));
-  // Serial.println(_time.substring(6,8));
-
-  // Serial.printf("Year = %ld", (_date.substring(6,10).toInt()));
-  // Serial.println();
-  // Serial.printf("Month = %ld", ((_date.substring(3,5).toInt())));
-  // Serial.println();
-  // Serial.printf("Day = %ld", ((_date.substring(0,2).toInt())));
-  // Serial.println();
-  // Serial.printf("Hour = %ld", ((_time.substring(0,2).toInt())));
-  // Serial.println();
-  // Serial.printf("Min = %ld", ((_time.substring(3,5).toInt())));
-  // Serial.println();
-  // Serial.printf("Sec = %ld", ((_time.substring(6,8).toInt())));
-  // Serial.println();
-
-  struct tm tm;
-  tm.tm_year = ((_date.substring(6, 10).toInt()) - 1900); // 2018 - 1900;
-  tm.tm_mon = ((_date.substring(3, 5).toInt()) - 1);      // dunno why this needs the -1.
-  tm.tm_mday = ((_date.substring(0, 2).toInt()));
-  tm.tm_hour = ((_time.substring(0, 2).toInt()));
-  tm.tm_min = ((_time.substring(3, 5).toInt()));
-  tm.tm_sec = 30;//((_time.substring(6, 8).toInt()));
-  time_t t = mktime(&tm);
-  printf("Setting time: %s", asctime(&tm));
-  struct timeval now = {.tv_sec = t};
-  settimeofday(&now, NULL);
-
-  // char buff[25];
-  // time_t rightnow = time (0);
-  // strftime (buff, 25, "%Y-%m-%d %H:%M:%S", localtime (&rightnow));
-  // Serial.println(buff);
-  return true;
+uint8_t hour = (_time.substring(0, 2).toInt());
+uint8_t minute = (_time.substring(3, 5).toInt());
+uint8_t second = (_time.substring(6, 8).toInt());
+rtc.adjust(DateTime(year, month, day, hour, minute, second));
 }
 
 String WiFiStuff::prepConfigPage()
@@ -435,7 +403,7 @@ void WiFiStuff::handleDataFile()
   DEBUG_WM("In download");
    SPIFFS.begin();
    File datafile = SPIFFS.open("/data.csv");
-   size_t sent = wwwServer->streamFile(datafile, "text/csv");
+   wwwServer->streamFile(datafile, "text/csv");
    delay(500);
    datafile.close();
 }
