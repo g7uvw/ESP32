@@ -58,6 +58,8 @@ SensorApp::SensorApp(const int DHTPin, DHTesp::DHT_MODEL_t DHT_Type)
 
 void SensorApp::goToSleep(void)
 {
+    WiFi.mode(WIFI_OFF);
+    btStop();
     Serial.println("Going to sleep for " + String(_interval) + " Seconds");
     esp_sleep_enable_timer_wakeup(_interval * uS_TO_S_FACTOR);
     gpio_pulldown_dis(GPIO_INPUT_IO_TRIGGER);       // not use pulldown on GPIO
