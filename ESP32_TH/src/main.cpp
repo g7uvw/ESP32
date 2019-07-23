@@ -49,13 +49,6 @@ void setup()
   Serial.begin(115200);
   delay(500);
   SensorApp sensor(DHTPin, DHTTYPE);
-
-
-  //gpio_pullup_en(GPIO_INPUT_IO_TRIGGER);        // use pullup on GPIO
-  //gpio_pulldown_dis(GPIO_INPUT_IO_TRIGGER);       // not use pulldown on GPIO
-  //esp_sleep_enable_ext0_wakeup(GPIO_INPUT_IO_TRIGGER, 0); // Wake if GPIO is low
-
-  //esp_deep_sleep_start();
 }
 
 
