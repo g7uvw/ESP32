@@ -2,12 +2,11 @@
 #define SensorApp_h
 #include <time.h>
 #include "Arduino.h"
-#include "SPIFFS.h"
 #include "FS.h"
-#include <DHTesp.h>
-#include <WiFi.h>
-#include <DNSServer.h>
-#include <WebServer.h> //use the new ESP32 port of the webserver
+#include "DHTesp.h"
+#include "WiFi.h"
+#include "DNSServer.h"
+#include "WebServer.h" //use the new ESP32 port of the webserver
 #include "SPIFFS.h"
 #include "wifi_stuff/WiFi_Stuff.h"
 
