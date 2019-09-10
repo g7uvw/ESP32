@@ -300,12 +300,14 @@ void WiFiStuff::handleData()
 {
   DEBUG_WM(F("Handle Data"));
   if (captivePortal())
-  { // If caprive portal redirect instead of displaying the page.
+  { // If captive portal redirect instead of displaying the page.
     return;
   }
-  String pageHTML;
+  String startHTML;
+  String endHTML;
   SPIFFS.begin();
-  File file = SPIFFS.open("/data.html");
+  File file = SPIFFS.open("/datapage_start.html");
+  
   if (!file || file.isDirectory())
   {
     wwwServer->send(500, "text/html", "- failed to open file for reading");
@@ -314,10 +316,39 @@ void WiFiStuff::handleData()
   }
   while (file.available())
   {
-    pageHTML = file.readString();
+    startHTML = file.readString();
   }
-  wwwServer->send(200, "text/html", pageHTML);
+  wwwServer->send(200, "text/html", startHTML);
   size_t sent = wwwServer->streamFile(file, "text/html");
+  file.close();
+
+  file = SPIFFS.open("/data.csv");
+   if (!file || file.isDirectory())
+  {
+    wwwServer->send(500, "text/html", "- failed to open file for reading");
+    DEBUG_WM(F("- failed to open file for reading"));
+    return;
+  }
+
+  sent = wwwServer->streamFile(file, "text/html");
+  file.close();
+
+  file = SPIFFS.open("/datapage_end.html");
+   if (!file || file.isDirectory())
+  {
+    wwwServer->send(500, "text/html", "- failed to open file for reading");
+    DEBUG_WM(F("- failed to open file for reading"));
+    return;
+  }
+
+while (file.available())
+  {
+    endHTML = file.readString();
+  }
+  wwwServer->send(200, "text/html", endHTML);
+  sent = wwwServer->streamFile(file, "text/html");
+  file.close();
+  
   delay(500);
   DEBUG_WM(F("- read and sent file OK"));
   DEBUG_WM(sent);
