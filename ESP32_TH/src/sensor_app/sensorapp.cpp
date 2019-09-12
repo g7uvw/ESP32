@@ -23,6 +23,7 @@ we decide what to do about it.
 
 SensorApp::SensorApp(const int DHTPin, DHTesp::DHT_MODEL_t DHT_Type)
 {
+   pinMode(LED_BUILTIN, OUTPUT);
   _DHTPin = DHTPin;
   _DHT_Type = DHT_Type;
   esp_sleep_wakeup_cause_t wakeup_reason;
@@ -33,6 +34,7 @@ SensorApp::SensorApp(const int DHTPin, DHTesp::DHT_MODEL_t DHT_Type)
     // If we got here by pushing the button then we hit case 1 or case 2
     case 1  :  
     case 2  : 
+    digitalWrite(LED_BUILTIN, HIGH);
       doWiFi();
       //goToSleep();
       break;
@@ -43,7 +45,9 @@ SensorApp::SensorApp(const int DHTPin, DHTesp::DHT_MODEL_t DHT_Type)
     case 3  : Serial.println("Wakeup to take a reading");
     case 4  :
     case 5  :
+      digitalWrite(LED_BUILTIN, HIGH);
       takeReading(_DHTPin,_DHT_Type); 
+      digitalWrite(LED_BUILTIN, LOW);
       goToSleep();
       break;
     // If we arrive here, then who knows how we got here, we could find out
@@ -59,6 +63,7 @@ SensorApp::SensorApp(const int DHTPin, DHTesp::DHT_MODEL_t DHT_Type)
 
 void SensorApp::goToSleep(void)
 {
+    digitalWrite(LED_BUILTIN, LOW);
     WiFi.mode(WIFI_OFF);
     btStop();
     Serial.println("Going to sleep for " + String(_interval) + " Seconds");

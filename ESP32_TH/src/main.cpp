@@ -30,6 +30,7 @@ const int DHTPin = 13;
 
 
 
+
 /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Here is where all the code goes. 
 First thing we do is enable some debugging on the serial port - this lets us 
@@ -49,6 +50,7 @@ void setup()
   Serial.begin(115200);
   delay(500);
   SensorApp sensor(DHTPin, DHTTYPE);
+  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 
