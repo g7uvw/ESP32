@@ -50,7 +50,7 @@ void setup()
   Serial.begin(115200);
   delay(500);
   SensorApp sensor(DHTPin, DHTTYPE);
-  pinMode(LED_BUILTIN, OUTPUT);
+  //pinMode(LED_BUILTIN, OUTPUT);
 }
 
 

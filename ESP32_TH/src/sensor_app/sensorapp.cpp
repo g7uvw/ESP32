@@ -64,6 +64,7 @@ SensorApp::SensorApp(const int DHTPin, DHTesp::DHT_MODEL_t DHT_Type)
 void SensorApp::goToSleep(void)
 {
     digitalWrite(LED_BUILTIN, LOW);
+    pinMode(LED_BUILTIN, INPUT);
     WiFi.mode(WIFI_OFF);
     btStop();
     Serial.println("Going to sleep for " + String(_interval) + " Seconds");
