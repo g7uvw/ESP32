@@ -322,37 +322,37 @@ void WiFiStuff::handleData()
   size_t sent = wwwServer->streamFile(file, "text/html");
   file.close();
 
-  file = SPIFFS.open("/data.csv");
-   if (!file || file.isDirectory())
-  {
-    wwwServer->send(500, "text/html", "- failed to open file for reading");
-    DEBUG_WM(F("- failed to open file for reading"));
-    return;
-  }
+  // file = SPIFFS.open("/data.csv");
+  //  if (!file || file.isDirectory())
+  // {
+  //   wwwServer->send(500, "text/html", "- failed to open file for reading");
+  //   DEBUG_WM(F("- failed to open file for reading"));
+  //   return;
+  // }
 
-  sent = wwwServer->streamFile(file, "text/html");
-  file.close();
+  // sent = wwwServer->streamFile(file, "text/html");
+  // file.close();
 
-  file = SPIFFS.open("/datapage_end.html");
-   if (!file || file.isDirectory())
-  {
-    wwwServer->send(500, "text/html", "- failed to open file for reading");
-    DEBUG_WM(F("- failed to open file for reading"));
-    return;
-  }
+  // file = SPIFFS.open("/datapage_end.html");
+  //  if (!file || file.isDirectory())
+  // {
+  //   wwwServer->send(500, "text/html", "- failed to open file for reading");
+  //   DEBUG_WM(F("- failed to open file for reading"));
+  //  return;
+  //}
 
-while (file.available())
-  {
-    endHTML = file.readString();
-  }
-  wwwServer->send(200, "text/html", endHTML);
-  sent = wwwServer->streamFile(file, "text/html");
-  file.close();
+//while (file.available())
+//  {
+//    endHTML = file.readString();
+//  }
+//  wwwServer->send(200, "text/html", endHTML);
+//  sent = wwwServer->streamFile(file, "text/html");
+//  file.close();
   
-  delay(500);
-  DEBUG_WM(F("- read and sent file OK"));
-  DEBUG_WM(sent);
-  file.close();
+  //delay(100);
+  //DEBUG_WM(F("- read and sent file OK"));
+  //DEBUG_WM(sent);
+  //file.close();
 }
 
 void WiFiStuff::handleWipe()
