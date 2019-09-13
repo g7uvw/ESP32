@@ -108,6 +108,9 @@ void SensorApp::takeReading(int _DHTPin, DHTesp::DHT_MODEL_t _DHTTYPE)
 {
   char timebuff[25];
   // Init RTC
+  // Power on RTC - put pin 14 high
+  pinMode(14, OUTPUT);
+  digitalWrite(14, HIGH);
   RTC_DS3231 rtc;
   rtc.begin();
     if (rtc.lostPower()) 
@@ -146,9 +149,9 @@ void SensorApp::takeReading(int _DHTPin, DHTesp::DHT_MODEL_t _DHTTYPE)
     Serial.println(datapoint);
     file.println(datapoint);
     file.close();
+    digitalWrite(14, LOW);
+    pinMode(14, INPUT_PULLDOWN);
     
-    //String test = _sensorID + " " + String(_interval) + " " + String(_caloffset);
-    //Serial.println(test);
 }
 
 void SensorApp::doWiFi()

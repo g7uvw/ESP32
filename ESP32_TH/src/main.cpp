@@ -48,9 +48,8 @@ void setup()
   btStop();
 
   Serial.begin(115200);
-  delay(500);
+  delay(100);
   SensorApp sensor(DHTPin, DHTTYPE);
-  //pinMode(LED_BUILTIN, OUTPUT);
 }
 
 

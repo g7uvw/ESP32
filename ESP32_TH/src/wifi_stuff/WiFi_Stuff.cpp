@@ -166,6 +166,10 @@ void WiFiStuff::handleConfig()
   pageHTML.replace("{i}", String(_interval));
   pageHTML.replace("{hc}", String(_caloffset));
 
+ // Power on RTC - put pin 14 high
+  pinMode(14, OUTPUT);
+  digitalWrite(14, HIGH);
+
   // get current date and time from RTC and fill those in too.
   char buff[25];
   RTC_DS3231 rtc;
@@ -178,6 +182,8 @@ void WiFiStuff::handleConfig()
   pageHTML.replace("{time}", String(buff));
   wwwServer->send(200, "text/html", pageHTML);
   //size_t sent = wwwServer->streamFile(file, "text/html");
+  digitalWrite(14, LOW);
+  pinMode(14, INPUT_PULLDOWN);
   delay(100);
   DEBUG_WM(F("- read and sent file OK"));
 }
@@ -233,6 +239,10 @@ void WiFiStuff::handleConfigSave()
   pageHTML.replace("{i}", String(_interval));
   pageHTML.replace("{hc}", String(_caloffset));
 
+// Power on RTC - put pin 14 high
+  pinMode(14, OUTPUT);
+  digitalWrite(14, HIGH);
+
 // get current date and time from RTC and fill those in too.
   char buff[25];
   RTC_DS3231 rtc;
@@ -244,6 +254,8 @@ void WiFiStuff::handleConfigSave()
   sprintf(buff, "%02d:%02d:%02d", _now.hour(), _now.minute(), _now.second());
   pageHTML.replace("{time}", String(buff));
   wwwServer->send(200, "text/html", pageHTML);
+  digitalWrite(14, LOW);
+  pinMode(14, INPUT_PULLDOWN);
 }
 
 void WiFiStuff::setDateTime(String _date, String _time)
@@ -252,6 +264,10 @@ void WiFiStuff::setDateTime(String _date, String _time)
   *WM 24-12-2019
   *WM 21:37:56
   */
+ // Power on RTC - put pin 14 high
+  pinMode(14, OUTPUT);
+  digitalWrite(14, HIGH);
+
  RTC_DS3231 rtc;
  rtc.begin();
     // January 21, 2014 at 3am you would call:
@@ -273,6 +289,9 @@ uint8_t hour = (_time.substring(0, 2).toInt());
 uint8_t minute = (_time.substring(3, 5).toInt());
 uint8_t second = (_time.substring(6, 8).toInt());
 rtc.adjust(DateTime(year, month, day, hour, minute, second));
+delay (100);
+  digitalWrite(14, LOW);
+  pinMode(14, INPUT_PULLDOWN);
 }
 
 String WiFiStuff::prepConfigPage()
